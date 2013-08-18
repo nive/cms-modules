@@ -1,0 +1,11 @@
+${data.topic}
+<br/>
+<br/>
+Name: ${data.name}<br/>
+E-Mail: ${data.email}<br/>
+Company ${data.company}<br/>
+<br/>
+<span tal:replace="structure view.FmtTextAsHTML(data.message)"/>
+<br/>
+<br/>
+-- Contact Form --

@@ -1,0 +1,4 @@
+<div class="pageelement peText" id="nive-element${context.GetID()}" i18n:domain="nive">
+<span tal:condition="context.useCache" tal:replace="structure context.data.tcache"/>
+<span tal:condition="not context.useCache" tal:replace="structure context.HTML()"/>
+</div>

@@ -1,0 +1,4 @@
+<div class="pageelement peContact" id="nive-element${context.GetID()}">
+  <a name="contact${context.GetID()}"></a>
+  <span tal:replace="structure view.contact()"/>
+</div>
