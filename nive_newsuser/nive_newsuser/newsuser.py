@@ -29,8 +29,8 @@ class SubscriptionForm(HTMLForm):
     """
     mail = None
     actions = [
-         Conf(id="default",  method="StartForm", name=u"Initialize",   hidden=True),
-         Conf(id="send",     method="Subscribe", name=u"Subscribe",    hidden=False, css_class=u"btn btn-primary",  html=u"", tag=u""),
+         Conf(id="default",          method="StartForm", name=u"Initialize",   hidden=True),
+         Conf(id="sendsubscription", method="Subscribe", name=u"Subscribe",    hidden=False, css_class=u"btn btn-info",  html=u"", tag=u""),
     ]
 
 
