@@ -38,8 +38,8 @@ class ContactForm(HTMLForm):
     """
     mail = None
     actions = [
-         Conf(id="default",  method="StartForm", name=u"Initialize",   hidden=True),
-         Conf(id="send",     method="SendForm",  name=u"Send message", hidden=False, css_class=u"btn btn-primary",  html=u"", tag=u""),
+         Conf(id="default",    method="StartForm", name=u"Initialize",   hidden=True),
+         Conf(id="sendcontact",method="SendForm",  name=u"Send message", hidden=False, css_class=u"btn btn-info",  html=u"", tag=u""),
     ]
 
 
@@ -61,7 +61,7 @@ class ContactForm(HTMLForm):
             if not result:
                 msgs.append("Sorry, a error occurred. The email could not be send.")
             else:
-                msgs.append("Thanks.")
+                msgs.append("Thanks. We have received your message.")
                 return result, self._Msgs(msgs=msgs)
         return result, self.Render(data, msgs=msgs, errors=errors)
 
@@ -71,8 +71,23 @@ class ContactView(Design):
     
     def contact(self):
         context = self.context
+        # add topic if choices available
+        fields = context.configuration.contactForm
+        topics = context.data.topics
+        if topics:
+            li = []
+            for t in topics.split("\n"):
+                t = t.replace("\r","")
+                li.append({"id":t, "name":t})
+            fc = FieldConf(id="topic", datatype="radio", size= 200, default="", required=1, name="Topic", listItems = li)
+            # make a new field list
+            fn = [fc]
+            for f in fields:
+                fn.append(f)
+            fields = fn
+        # setup the form
         form = ContactForm(context=context, request=self.request, view=self, app=context.app)
-        form.fields = context.configuration.contactForm
+        form.fields = fields
         form.mail =  Mail(context.data.mailtitle, context.configuration.mailtmpl)
         form.mail.recv = (context.data.receiver, context.data.receiverName)
         form.anchor = u"#contact"+str(context.id)
@@ -103,12 +118,6 @@ configuration = ObjectConf(
        FieldConf(id="name",    datatype="string", size=   50, default="", required=1, name="Name", description=""),
        FieldConf(id="email",   datatype="email",  size=  200, default="", required=1, name="E-Mail", description=""),
        FieldConf(id="company", datatype="string", size=  200, default="", required=0, name="Company", description=""),
-       FieldConf(id="topic",   datatype="radio",  size=   30, default="", required=1, name="Topic", description="",
-                 listItems = [{'id': 'support', 'name': 'Support'}, 
-                              {'id': 'feedback', 'name': 'Feedback'},
-                              {'id': 'contract', 'name': 'Contract'},
-                             ], 
-                 ),
        FieldConf(id="message", datatype="text",   size= 2000, default="", required=1, name="Message", description=""),
     ],
     mailtmpl = "nive_contact:contactmail.pt"
@@ -116,13 +125,14 @@ configuration = ObjectConf(
 
 # these are the contact element fields
 configuration.data = [
+    FieldConf(id="topics",        datatype="text",   size=200, default="", name="Topics by line",description=""),
     FieldConf(id="receiver",      datatype="email",  size=100, default="", name="Receiver",      description=""),
     FieldConf(id="receiverName",  datatype="string", size=100, default="", name="Receiver name", description=""),
     FieldConf(id="mailtitle",     datatype="string", size=100, default="", name="Mail title",    description="")
 ]
 
 # define the fields actually to be used in the cms element add and edit forms 
-fields = ["title", "receiver", "receiverName", "mailtitle", "pool_groups"]
+fields = ["title", "topics", "receiver", "receiverName", "mailtitle", "pool_groups"]
 configuration.forms = {"create": {"fields":fields}, "edit": {"fields":fields}}
 
 # define a new view to link our custom view class (ContactView) with the contact obj (ContactObj)
