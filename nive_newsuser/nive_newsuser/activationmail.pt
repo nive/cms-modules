@@ -1,0 +1,3 @@
+<span tal:replace="structure form.mailtext"/>
+<p><a href="${form.activationUrl}?aid=${data.activationID}">Activate subscription</a></p>
+<span tal:replace="structure form.mailfooter"/>

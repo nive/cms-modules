@@ -1,0 +1,9 @@
+<div class="pageelement peNewsuser" id="nive-element${context.GetID()}"
+     tal:define="activate view.activate()">
+  <a name="reg${context.GetID()}"></a>
+  
+  <div  tal:condition="activate" class="alert alert-success">
+     <span tal:replace="structure activate"/></div>
+  <span tal:condition="not activate"
+        tal:replace="structure view.subscribe()"/>
+</div>
