@@ -27,6 +27,12 @@ class DummyContact(object):
     @property
     def app(self):
         return self
+    @property
+    def portal(self):
+        return self
+    @property
+    def userdb(self):
+        return self
     def GetTool(self, name):
         class DummyTool(object):
             def __call__(self, **kw):
