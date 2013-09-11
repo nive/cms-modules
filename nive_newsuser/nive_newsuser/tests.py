@@ -9,14 +9,15 @@ from nive.definitions import Conf
 from nive.helper import FormatConfTestFailure
 from nive.views import BaseView
 from nive.views import Mail
-from nive_contact import contact
+from nive_newsuser import newsuser
 
 
-class DummyContact(object):
+class DummyNewsuser(object):
     useCache = False
-    configuration =  contact.configuration
-    data = Conf(receiverName=u"no one", receiver=u"no@one.com", mailtitle=u"contact mail")
-    meta = Conf(title=u"a contact form")
+    id=123
+    configuration =  newsuser.configuration
+    data = Conf(mailtitle=u"a mail", mailtext=u"contact mail", mailfooter=u"no one", newsgroup=u"one.com", notify=1)
+    meta = Conf(title=u"a form")
     frontendCodepage = ""
     def GetID(self):
         return 1
@@ -32,11 +33,14 @@ class DummyContact(object):
             def __call__(self, **kw):
                 return True, "value"
         return DummyTool()
-
+    def QueryConfByName(self, a, b):
+        return self
     
 class DummyView(object):
-    def contact(self):
+    def subscribe(self):
         return "placeholder"
+    def activate(self):
+        return ""
     
 class TestConf(unittest.TestCase):
 
@@ -46,8 +50,15 @@ class TestConf(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_conf(self):
-        r=contact.configuration.test()
+    def test_conf1(self):
+        r=newsuser.configuration.test()
+        if not r:
+            return
+        print FormatConfTestFailure(r)
+        self.assert_(False, "Configuration Error")
+
+    def test_conf2(self):
+        r=newsuser.newsuser_configuration.test()
         if not r:
             return
         print FormatConfTestFailure(r)
@@ -66,22 +77,18 @@ class TestTemplate(unittest.TestCase):
         testing.tearDown()
 
     def test_tmpl(self):
-        text = DummyContact()
-        html = render("nive_contact:contact.pt", {"context": text, "view": DummyView()})
+        text = DummyNewsuser()
+        html = render("nive_newsuser:form.pt", {"context": text, "view": DummyView()})
         self.assert_(html)
         self.assert_(html.find("placeholder")!=-1)
 
     def test_tmplmail(self):
-        data = {
-            "topic":"topic", 
-            "name":"name", 
-            "email":"email@email.com", 
-            "company":"company", 
-            "message":"message"
-        }
-        html = render("nive_contact:contactmail.pt", {"data": data, "view": BaseView(None,None)})
+        data = Conf(activationID="1234567890")
+        form = Conf(activationUrl="http://123.com", mailtext="header", mailfooter="footer")
+        html = render("nive_newsuser:activationmail.pt", {"data": data, "form": form, "view": BaseView(None,None)})
         self.assert_(html)
-        self.assert_(html.find("topic")!=-1)
+        self.assert_(html.find(data.activationID)!=-1)
+        self.assert_(html.find(form.activationUrl)!=-1)
 
 
        
@@ -96,19 +103,17 @@ class TestForm(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
         
-    def test_form(self):
-        context = DummyContact()
+    def test_form1(self):
+        context = DummyNewsuser()
         self.request.POST = {
-            "topic":"topic", 
-            "name":"name", 
-            "email":"email@email.com", 
-            "company":"company", 
-            "message":"message",
         }
-        form = contact.ContactForm(view=BaseView(context,self.request), app=context)
-        form.fields = contact.configuration.contactForm
-        form.mail =  Mail(context.data.mailtitle, context.configuration.mailtmpl)
-        form.mail.recv = (context.data.receiver, context.data.receiverName)
-        form.Setup()
-        result, data = form.SendForm(action="send")
- 
+        view = newsuser.SubscriptionView(context,self.request)
+        view.subscribe()
+
+    def test_form2(self):
+        context = DummyNewsuser()
+        self.request.POST = {
+            "email": "no@aaa.com"
+        }
+        view = newsuser.SubscriptionView(context,self.request)
+        view.subscribe()
