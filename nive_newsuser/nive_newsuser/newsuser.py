@@ -9,12 +9,19 @@ Website users can sign up with their email e.g. for a newsletter and remove
 their subsrciption again by entering their email. Confirmation emails are send 
 to activate subscriptions.
 
-Uses the `sendMail` module registered with the userdb
+The actual newsusers are stored in the userdb database by default. 
+Also the `sendMail` module registered with the userdb is used to send activation
+codes.
+To change this please have a look at the configuration values `sendMailProvider`
+and `storageApplication`.
 """
+
+import uuid
 
 from nive.views import Mail
 from nive.forms import HTMLForm
 from nive.definitions import IWebsiteRoot
+from nive.definitions import ConfigurationError
 from nive.cms.design.view import Design
 from nive.components.objects.base import PageElementBase
 from nive.components.objects.base import ObjectBase
@@ -33,19 +40,29 @@ class SubscriptionForm(HTMLForm):
          Conf(id="sendsubscription", method="Subscribe", name=u"Subscribe",    hidden=False, css_class=u"btn btn-info",  html=u"", tag=u""),
     ]
 
+    def GenerateID(self, length=20, repl="-"):
+        # generates a id
+        return str(uuid.uuid4()).replace(repl,"")[:length]
+        
 
     def Subscribe(self, action, **kw):
         """
         Form action: send the message 
         """
         msgs = []
-        userdb = self.context.app.portal.userdb.root()
+        # lookup storage application
+        storageID = self.context.configuration.storageApplication
+        try:
+            storage = self.context.app.portal[storageID]
+        except KeyError:
+            raise ConfigurationError, "Newsuser storage application not defined"
+        storage = storage.root()
         # maybe the email is actually the activation id?
         aid = self.GetFormValue("email")
         if aid:
-            newsusers = userdb.Select(pool_type=u"newsuser", parameter={u"activationID":aid}, fields=[u"id"], max=2)
+            newsusers = storage.Select(pool_type=u"newsuser", parameter={u"activationID":aid}, fields=[u"id"], max=2)
             if len(newsusers):
-                user = userdb.GetObj(newsuser[0][0])
+                user = storage.GetObj(newsuser[0][0])
                 if user.Activate():
                     msgs.append("Finished. The subscription has been activated.")
                     return True, self._Msgs(msgs=msgs)
@@ -54,29 +71,35 @@ class SubscriptionForm(HTMLForm):
         if result:
             # lookup email
             email = data["email"]
-            newsusers = userdb.Select(pool_type=u"newsuser", parameter={u"email":email}, fields=[u"id"], max=2)
+            newsusers = storage.Select(pool_type=u"newsuser", parameter={u"email":email}, fields=[u"id"], max=2)
             if len(newsusers)==0:
                 # not found -> add a new subscription
                 data = {u"email":email, 
                         u"newsgroup":self.newsgroup, 
                         u"pool_state": 0, 
                         u"notify": self.notify,
-                        u"activationID": userdb.GenerateID()}
+                        u"activationID": self.GenerateID()}
                 # send mail
                 body = self.mail(data=data, form=self, view=self.view)
-                tool = self.context.app.portal.userdb.GetTool("sendMail")
+                # lookup mail tool
+                app = self.context.configuration.sendMailProvider
+                try:
+                    app = self.context.app.portal[app]
+                except KeyError:
+                    raise ConfigurationError, "Newsuser sendMail tool not defined"
+                tool = app.GetTool("sendMail")
                 result, value = tool(body=body, title=self.mail.title, recvmails=[(email,"")], force=1)
                 if not result:
                     msgs.append("Sorry, a error occurred. The email could not be send.")
                 else:
-                    result = userdb.Create(u"newsuser", data=data, user=self.view.User())
+                    result = storage.Create(u"newsuser", data=data, user=self.view.User())
                     if result:
                         msgs.append("Thanks. Please follow the steps described in the email we have just send to complete the subscription.")
                         return result, self._Msgs(msgs=msgs)
             else:
                 # found -> remove subscription(s)
                 for user in newsusers:
-                    userdb.root().Delete(user[0], user=self.view.User())
+                    storage.Delete(user[0], user=self.view.User())
                 msgs.append("Finished. The subscription has been removed.")
                 return result, self._Msgs(msgs=msgs)
         return result, self.Render(data, msgs=msgs, errors=errors)
@@ -104,14 +127,19 @@ class SubscriptionView(Design):
 
     def activate(self):
         context = self.context
-
-        userdb = context.app.portal.userdb.root()
+        # lookup storage application
+        storageID = self.context.configuration.storageApplication
+        try:
+            storage = self.context.app.portal[storageID]
+        except KeyError:
+            raise ConfigurationError, "Newsuser storage application not defined"
+        storage = storage.root()
         # try for valid activation id
         aid = self.GetFormValue("aid")
         if aid:
-            newsusers = userdb.Select(pool_type=u"newsuser", parameter={u"activationID":aid}, fields=[u"id"], max=2)
+            newsusers = storage.Select(pool_type=u"newsuser", parameter={u"activationID":aid}, fields=[u"id"], max=2)
             if len(newsusers):
-                user = userdb.GetObj(newsusers[0][0])
+                user = storage.GetObj(newsusers[0][0])
                 if user.Activate(self.User()):
                     return "Finished. The subscription has been activated."
             else:
@@ -126,10 +154,21 @@ class CmsFormObj(PageElementBase):
 # cms registration form definition ------------------------------------------------------------------
 
 def SetupNewsuser(app):
-    # called on system startup to add the newsuser as module to the 
-    # current userdb. Makes the step to manually add the newsuser 
-    # to the userdb obsolete (e.g. ``userdb.modules.append("nive_newsuser:newsuser_configuration")``)
-    app.portal.userdb.Register("nive_newsuser:newsuser_configuration")
+    """
+    Called on system startup to add the newsuser as module to the 
+    current userdb by default. The behaviour can be changed by setting
+    `configuration.storageApplication` to a different application id.
+    Makes the step to manually add the newsuser 
+    to the userdb obsolete (e.g. ``userdb.modules.append("nive_newsuser:newsuser_configuration")``)
+    """
+    conf = app.GetObjectConf("regform", True)
+    # lookup storage application
+    storageID = conf.storageApplication
+    try:
+        storage = app.portal[storageID]
+    except KeyError:
+        raise ConfigurationError, "Newsuser storage application not defined"
+    storage.Register("nive_newsuser:newsuser_configuration")
 
 
 #@nive_module
@@ -142,6 +181,7 @@ configuration = ObjectConf(
     selectTag = StagPageElement,
     icon = "nive.cms.cmsview:static/images/types/element.png",
     description = __doc__,
+
     # system registration event to trigger userdb.newsuser installation
     events = (Conf(event="startup", callback=SetupNewsuser),),
     # the form to be displayed on the web page 
@@ -149,7 +189,11 @@ configuration = ObjectConf(
        FieldConf(id="email",   datatype="email",  size=  200, default="", required=1, name="E-Mail", description=""),
     ],
     mailtmpl = "nive_newsuser:activationmail.pt",
-    adminNotification = None
+    adminNotification = None,
+    # Select the application for newsuser storage and the sendMail tool provider.
+    # The value must be the application id registered in the portal (by default userdb) 
+    sendMailProvider = "userdb",
+    storageApplication = "userdb"
 )
 
 # these are the newsuser element fields
