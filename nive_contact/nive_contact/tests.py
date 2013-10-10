@@ -87,7 +87,7 @@ class TestTemplate(unittest.TestCase):
         }
         html = render("nive_contact:contactmail.pt", {"data": data, "view": BaseView(None,None)})
         self.assert_(html)
-        self.assert_(html.find("topic")!=-1)
+        self.assert_(html.find("message")!=-1)
 
 
        

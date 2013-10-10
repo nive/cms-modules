@@ -22,8 +22,8 @@ from nive.views import Mail
 from nive.forms import HTMLForm
 from nive.definitions import IWebsiteRoot
 from nive.definitions import ConfigurationError
-from nive.cms.design.view import Design
-from nive.components.objects.base import PageElementBase
+from nive_cms.design.view import Design
+from nive_cms.baseobjects import PageElementBase
 from nive.components.objects.base import ObjectBase
 from nive.definitions import StagPageElement, StagRessource
 from nive.definitions import ObjectConf, FieldConf, ViewConf, Conf
@@ -179,7 +179,7 @@ configuration = ObjectConf(
     context = CmsFormObj,
     template = "nive_newsuser:form.pt",
     selectTag = StagPageElement,
-    icon = "nive.cms.cmsview:static/images/types/element.png",
+    icon = "nive_cms.cmsview:static/images/types/element.png",
     description = __doc__,
 
     # system registration event to trigger userdb.newsuser installation
@@ -248,7 +248,7 @@ newsuser_configuration = ObjectConf(
     dbparam = "newsuser",
     context = NewsuserObj,
     selectTag = StagPageElement,
-    icon = "nive.cms.cmsview:static/images/types/element.png",
+    icon = "nive_cms.cmsview:static/images/types/element.png",
     description = __doc__,
 )
 

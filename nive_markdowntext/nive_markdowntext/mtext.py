@@ -27,7 +27,7 @@ from nive.i18n import _
 from nive.utils.utils import ConvertHTMLToText, CutText
 
 from nive.definitions import StagPageElement, ObjectConf, FieldConf
-from nive.components.objects.base import PageElementBase
+from nive_cms.baseobjects import PageElementBase
 
 
 
@@ -69,7 +69,7 @@ configuration = ObjectConf(
     context = mtext,
     template = "nive_markdowntext:mtext.pt",
     selectTag = StagPageElement,
-    icon = "nive.cms.cmsview:static/images/types/element.png",
+    icon = "nive_cms.cmsview:static/images/types/element.png",
     description = __doc__,
 )
 

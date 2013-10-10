@@ -26,8 +26,8 @@ Uses the `sendMail` module registered with the userdb
 from nive.views import Mail
 from nive.forms import HTMLForm
 from nive.definitions import IWebsiteRoot
-from nive.cms.design.view import Design
-from nive.components.objects.base import PageElementBase
+from nive_cms.design.view import Design
+from nive_cms.baseobjects import PageElementBase
 from nive.definitions import StagPageElement, ObjectConf, FieldConf, ViewConf, Conf
 
 
@@ -110,7 +110,7 @@ configuration = ObjectConf(
     context = ContactObj,
     template = "nive_contact:contact.pt",
     selectTag = StagPageElement,
-    icon = "nive.cms.cmsview:static/images/types/element.png",
+    icon = "nive_cms.cmsview:static/images/types/element.png",
     description = __doc__,
     # contact specific configuration
     # the form to be displayed on the web page 
