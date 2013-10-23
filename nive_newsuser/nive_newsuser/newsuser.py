@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2013 Nive GmbH. All rights reserved.
 # Released under GPL3. see license.txt
+
 __doc__ = """
 E-Mail registration form
 ------------------------
