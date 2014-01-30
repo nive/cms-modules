@@ -67,6 +67,7 @@ class TestTemplate(unittest.TestCase):
         request._LOCALE_ = "en"
         self.request = request
         self.config = testing.setUp(request=request)
+        self.config.include('pyramid_chameleon')
 
     def tearDown(self):
         testing.tearDown()
@@ -98,6 +99,7 @@ class TestForm(unittest.TestCase):
         request._LOCALE_ = "en"
         self.request = request
         self.config = testing.setUp(request=request)
+        self.config.include('pyramid_chameleon')
 
     def tearDown(self):
         testing.tearDown()

@@ -14,12 +14,13 @@ except:
     CHANGES = ''
 
 requires = [
-    'nive'
+    'nive',
+    'pyramid_chameleon'
 ]
 
 setupkw = dict(
       name='nive_newsuser',
-      version='0.1.1',
+      version='0.1.2',
       description='E-mail registration form element for Nive cms',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[

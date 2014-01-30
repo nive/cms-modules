@@ -15,12 +15,13 @@ except:
 
 requires = [
     'nive', 
-    'markdown2' 
+    'markdown2',
+    'pyramid_chameleon' 
 ]
 
 setupkw = dict(
       name='nive_markdowntext',
-      version='0.1.1',
+      version='0.1.2',
       description='Markdown text element for Nive cms',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[
