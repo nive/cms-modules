@@ -43,8 +43,14 @@ class ContactForm(HTMLForm):
                 title = data["topic"] + " - " + self.mail.title
             except:
                 title = self.mail.title
+            # lookup mail tool
+            app = self.context.configuration.sendMailProvider
+            try:
+                app = self.context.app.portal[app]
+            except KeyError:
+                raise ConfigurationError, "Contact sendMail tool not defined"
             body = self.mail(user=user, data=data, view=self.view)
-            tool = self.context.app.portal.userdb.GetTool("sendMail")
+            tool = app.GetTool("sendMail")
             result, value = tool(body=body, title=title, recvmails=[self.mail.recv], force=1)
             if not result:
                 msgs.append("Sorry, a error occurred. The email could not be send.")
@@ -101,6 +107,7 @@ configuration = ObjectConf(
     icon = "nive_cms.cmsview:static/images/types/element.png",
     description = __doc__,
     # contact specific configuration
+    sendMailProvider = "userdb",
     # the form to be displayed on the web page 
     contactForm = [
        FieldConf(id="name",    datatype="string", size=   50, default="", required=1, name="Name", description=""),
