@@ -6,6 +6,7 @@ from pyramid.renderers import render
 from pyramid import testing 
 
 from nive.definitions import Conf
+from nive.definitions import ConfigurationError
 from nive.helper import FormatConfTestFailure
 from nive.views import BaseView
 from nive.views import Mail
@@ -38,6 +39,8 @@ class DummyContact(object):
             def __call__(self, **kw):
                 return True, "value"
         return DummyTool()
+    def __getitem__(self, key):
+        raise KeyError, key
 
     
 class DummyView(object):
@@ -118,5 +121,5 @@ class TestForm(unittest.TestCase):
         form.mail =  Mail(context.data.mailtitle, context.configuration.mailtmpl)
         form.mail.recv = (context.data.receiver, context.data.receiverName)
         form.Setup()
-        result, data = form.SendForm(action="send")
+        self.assertRaises(ConfigurationError, form.SendForm, ("send"))
  
