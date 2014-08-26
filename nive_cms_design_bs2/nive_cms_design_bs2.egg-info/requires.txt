@@ -1,2 +1,0 @@
-nive_cms
-pyramid_chameleon
