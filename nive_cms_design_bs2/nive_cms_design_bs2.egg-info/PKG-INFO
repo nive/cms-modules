@@ -1,0 +1,45 @@
+Metadata-Version: 1.1
+Name: nive-cms-design-bs2
+Version: 0.1.1
+Summary: Nive cms design based on bootstrap 2
+Home-page: http://cms.nive.co
+Author: Arndt Droullier, Nive GmbH
+Author-email: info@nive.co
+License: GPL 3
+Description: 
+        # Nive cms design based on bootstrap 2!
+        
+        Up to the 1.0 release this was the default design. Now released as independent 
+        package.
+        
+        See Nive cms: http://cms.nive.co
+        
+        ## Usage
+        
+        After installation (``pip install nive_cms_design_bs2``) activate the element by
+        adding ``nive_cms_design_bs2`` to your website project module list.
+        
+        For a default scaffold installation go to `__init__.py` of your website
+        and add the following line to the configuration 
+        ``website.modules.append("nive_cms_design_bs2")`` e.g. ::
+        
+            website = AppConf("nive.cms.app",
+                title=u"My website", 
+                id="website",
+                ...
+            )
+            website.modules.append("nive_cms_design_bs2")
+         
+        
+        
+        
+        
+Keywords: bootstrap 2 nive cms website publisher pyramid
+Platform: UNKNOWN
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python
+Classifier: Framework :: Pyramid
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Development Status :: 4 - Beta
+Classifier: Programming Language :: Python :: 2.6
+Classifier: Programming Language :: Python :: 2.7

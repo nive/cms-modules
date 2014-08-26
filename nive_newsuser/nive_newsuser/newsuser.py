@@ -23,7 +23,7 @@ from nive.views import Mail
 from nive.forms import HTMLForm
 from nive.definitions import IWebsiteRoot
 from nive.definitions import ConfigurationError
-from nive_cms.design.view import Design
+from nive_cms.baseobjects import DesignBase
 from nive_cms.baseobjects import PageElementBase
 from nive.components.objects.base import ObjectBase
 from nive.definitions import StagPageElement, StagRessource
@@ -107,7 +107,7 @@ class SubscriptionForm(HTMLForm):
 
 
 
-class SubscriptionView(Design):
+class SubscriptionView(DesignBase):
     
     def subscribe(self):
         context = self.context

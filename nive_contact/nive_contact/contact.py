@@ -15,7 +15,7 @@ from nive.views import Mail
 from nive.forms import HTMLForm
 from nive.definitions import IWebsiteRoot
 from nive.definitions import ConfigurationError
-from nive_cms.design.view import Design
+from nive_cms.baseobjects import DesignBase
 from nive_cms.baseobjects import PageElementBase
 from nive.definitions import StagPageElement, ObjectConf, FieldConf, ViewConf, Conf
 
@@ -62,7 +62,7 @@ class ContactForm(HTMLForm):
 
 
 
-class ContactView(Design):
+class ContactView(DesignBase):
     
     def contact(self):
         context = self.context
