@@ -51,7 +51,7 @@
                         <a tal:condition="view.IsEditmode()"
                            class="page-scroll" href="${view.PageUrl(page)}">${page.GetTitle()}</a>
                         <a tal:condition="not view.IsEditmode()"
-                           class="page-scroll" href="#${page.meta.pool_filename}">${page.GetTitle()}</a>
+                           class="page-scroll" href="${'' if context.IsRoot() else view.PageUrl(context.root())}#${page.meta.pool_filename}">${page.GetTitle()}</a>
                     </li>
                 </ul>
                 <form class="navbar-form navbar-right" role="form"
