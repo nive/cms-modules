@@ -50,7 +50,8 @@ responsive = (
 
 colors = (
     {"id": u"", "name": _(u"none")}, 
-    {"id": u"btn-primary", "name": _(u"Primary")}, 
+    {"id": u"btn-default", "name": _(u"Default")},
+    {"id": u"btn-primary", "name": _(u"Primary")},
     {"id": u"btn-info", "name": _(u"Info")}, 
     {"id": u"btn-success", "name": _(u"Success")}, 
     {"id": u"btn-warning", "name": _(u"Warning")}, 
