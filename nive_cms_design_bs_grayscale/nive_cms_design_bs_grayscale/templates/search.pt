@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<tal:block metal:use-macro="view.index_tmpl().macros['main']">
+<tal:block metal:fill-slot="content">
+    <section id="search" class="container content-section text-center">
+    <div tal:define="result context.root().SearchFulltext(view.GetFormValue('phrase'),parameter={'pool_stag':10, 'pool_state':1});
+                     rooturl view.FolderUrl()" 
+         class="row">
+        <form action="${view.FolderUrl(context.root())}search">
+            <div class="col-md-4 col-md-offset-3"><input type="text" name="phrase" class="form-control" value="${result['phrase']}"></div>
+            <div class="col-md-2"><input type="submit" class="btn btn-info" value="Find text"></div>
+        </form>
+        <div class="col-md-8 col-md-offset-2">
+            <hr>
+            <h3 tal:condition="result['count']==0">Nothing found!</h3>
+            <p tal:condition="result['count']==1"> <em>${result['count']} page found!</em></p>
+            <p tal:condition="result['count']>1"> <em>${result['count']} pages found!</em></p>
+            <hr>
+            <div tal:repeat="rec result['items']">
+              <h2><a href="${rooturl}su?r=${rec['id']}">${rec['title']}</a></h2>
+              <p tal:content="structure view.FmtTextAsHTML(view.CutText(rec['fulltext'], 300))"></p>
+              <hr>
+            </div>
+        </div>
+    </div>
+    </section>
+</tal:block>
+</tal:block>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<tal:block metal:use-macro="view.index_tmpl().macros['main']" i18n:domain="nive_cms">
+
+<tal:block metal:fill-slot="content">
+    <header class="intro">
+        <div class="intro-body">
+            <div class="container">
+                <div class="row">
+                    <tal:block tal:repeat="el context.GetPageElements(user=view.User(), checkPermissions=True)">
+                        <span tal:condition="el.IsContainer()" tal:replace="structure view.RenderView(el, secure=True, raiseUnauthorized=False)"/>
+                        <div  tal:condition="not el.IsContainer()" tal:content="structure view.RenderView(el, secure=True, raiseUnauthorized=False)"
+                              class="col-lg-8 col-lg-offset-2 text-center"></div>
+                    </tal:block>
+                    <div tal:condition="not context.app.db.GetCountEntries()"
+                         class="col-md-8 col-md-offset-2 text-center">
+                        <h1 class="brand-heading">Welcome to Nive CMS</h1>
+                        <p class="intro-text">The design is based on -Grayscale-, a free, responsive, one page Bootstrap theme.
+                            Created by Start Bootstrap.</p>
+                        <tal:block tal:condition="not view.IsEditmode()">
+                        <p>The website is empty. Click the button to start editing.</p>
+                        <a href="editor" class="btn btn-circle page-scroll">
+                            <i class="fa fa-angle-double-down animated"></i>
+                        </a>
+                        </tal:block>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <tal:block tal:condition="not view.IsEditmode()"
+             tal:repeat="section context.GetPages(hidden=0)">
+        <section id="${section.meta.pool_filename}" class="content-section">
+            <div class="${section.meta.pool_filename}-section container ">
+                <div tal:condition="section.data.get('header')"
+                      class="row">
+                    <div class="col-lg-12 text-center"><h3 tal:content="structure section.data.get('header')"></h3></div>
+                </div>
+                <div class="row">
+                    <tal:block tal:repeat="el section.GetPageElements(user=view.User(), checkPermissions=True)">
+                        <span tal:condition="el.IsContainer()" tal:replace="structure view.RenderView(el, secure=True, raiseUnauthorized=False)"/>
+                        <div  tal:condition="not el.IsContainer()" tal:content="structure view.RenderView(el, secure=True, raiseUnauthorized=False)"
+                              class="col-lg-8 col-lg-offset-2 text-center"></div>
+                    </tal:block>
+                </div>
+            </div>
+        </section>
+    </tal:block>
+</tal:block>
+
+</tal:block>

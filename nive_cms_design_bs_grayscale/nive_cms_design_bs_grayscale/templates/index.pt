@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<tal:block metal:define-macro="main">
+<html lang="en" i18n:domain="nive_cms">
+<head>
+    <title tal:content="view.HtmlTitle()"></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noimageindex">
+    <meta name="generator" content="nive cms">
+    <meta name="description" content="${context.data.get(u'description',u'')}">
+
+    <span tal:replace="structure view.Assets()"/>
+    <tal:block tal:condition="cmsview"><span tal:replace="structure cmsview.EditorAssets(ignore=['jquery.js'])"/></tal:block>
+    <tal:block metal:define-slot="head"> </tal:block>
+    <tal:block tal:condition="head|None" tal:replace="structure head" tal:on-error="nothing"> </tal:block>
+    <!-- Custom Fonts -->
+    <link href="http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-main-collapse">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <a class="navbar-brand page-scroll" href="${view.PageUrl(context.root())}#page-top">
+                    <i class="fa fa-play-circle"></i>  <span class="light">Start</span> Bootstrap
+                </a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
+                <ul class="nav navbar-nav">
+                    <!-- Hidden li included to remove active class from about link when scrolled up past about section -->
+                    <li class="hidden">
+                        <a href="#page-top"></a>
+                    </li>
+                    <li tal:repeat="page context.root().GetPages(hidden=0)">
+                        <a tal:condition="view.IsEditmode()"
+                           class="page-scroll" href="${view.PageUrl(page)}">${page.GetTitle()}</a>
+                        <a tal:condition="not view.IsEditmode()"
+                           class="page-scroll" href="#${page.meta.pool_filename}">${page.GetTitle()}</a>
+                    </li>
+                </ul>
+                <form class="navbar-form navbar-right" role="form"
+                      action="${view.FolderUrl(context.root())}search">
+                    <input type="text" name="phrase" class="form-control input-sm" placeholder="Search">
+                </form>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- content start -->
+    <tal:block metal:define-slot="content"> </tal:block>
+    <!-- content end -->
+
+    <!-- inserts page edit bar -->
+    <div class="container text-center">
+    <div tal:condition="cmsview"
+         tal:replace="structure cmsview.editBlockPage()" id="nive-page-edit" />
+    </div>
+
+    <!-- Map Section -->
+    <!--div id="map"></div-->
+
+    <!-- Footer -->
+    <footer>
+        <div class="container text-center">
+            <tal:block metal:define-slot="footer">
+                <span tal:define="column context.page.GetColumn(u'footer')"
+                      tal:condition="column"
+                      tal:replace="structure view.RenderView(column)"/>
+                <!-- inserts column edit bar -->
+                <div tal:condition="cmsview"
+                     tal:replace="structure cmsview.editBlockColumn(name=u'footer')"  id="nive-column-edit-footer" />
+            </tal:block>
+        </div>
+    </footer>
+
+    <!-- inserts toolbox and other cms widgets -->
+    <span tal:condition="cmsview"
+          tal:replace="structure cmsview.cms()" />
+
+    <!-- Google Maps API Key - Use your own API key to enable the map feature. More information on the Google Maps API can be found at https://developers.google.com/maps/ -->
+    <!--script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=&sensor=false"></script-->
+</body>
+</html>
+</tal:block>

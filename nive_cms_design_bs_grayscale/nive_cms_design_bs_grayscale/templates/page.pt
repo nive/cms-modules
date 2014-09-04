@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<tal:block metal:use-macro="view.index_tmpl().macros['main']" i18n:domain="nive_cms">
+
+<tal:block metal:fill-slot="content">
+    <section id="${context.meta.pool_filename}" class="content-section">
+        <div class="${context.meta.pool_filename}-section container ">
+            <div tal:condition="context.data.get('header')"
+                  class="row">
+                <div class="col-lg-12 text-center"><h3 tal:content="structure context.data.get('header')"></h3></div>
+            </div>
+            <div class="row">
+                <tal:block tal:repeat="el context.GetPageElements(user=view.User(), checkPermissions=True)">
+                    <span tal:condition="el.IsContainer()" tal:replace="structure view.RenderView(el, secure=True, raiseUnauthorized=False)"/>
+                    <div  tal:condition="not el.IsContainer()" tal:content="structure view.RenderView(el, secure=True, raiseUnauthorized=False)"
+                          class="col-lg-8 col-lg-offset-2 text-center"></div>
+                </tal:block>
+            </div>
+        </div>
+    </section>
+
+    <section tal:condition="not view.IsEditmode()"
+             tal:repeat="section context.GetPages(hidden=0)"
+             id="${section.meta.pool_filename}" class="container content-section">
+        <div class="${section.meta.pool_filename}-section">
+            <div tal:condition="section.data.get('header')"
+                  class="row">
+                <div class="col-lg-12 text-center"><h3 tal:content="structure section.data.get('header')"></h3></div>
+            </div>
+            <div class="row">
+                <tal:block tal:repeat="el section.GetPageElements(user=view.User(), checkPermissions=True)">
+                    <span tal:condition="el.IsContainer()" tal:replace="structure view.RenderView(el, secure=True, raiseUnauthorized=False)"/>
+                    <div  tal:condition="not el.IsContainer()" tal:content="structure view.RenderView(el, secure=True, raiseUnauthorized=False)"
+                          class="col-lg-8 col-lg-offset-2 text-center"></div>
+                </tal:block>
+            </div>
+        </div>
+    </section>
+
+</tal:block>
+
+</tal:block>
