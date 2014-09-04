@@ -85,6 +85,8 @@ class tDesign(object):
         view = Design(self.page, self.request)
         vrender = {"context":self.page, "view":view, "request": self.request, "cmsview":None}
         
+        render("nive_cms_design_bs3:templates/index.pt", vrender)
+
         render("nive_cms_design_bs3:templates/page.pt", vrender)
         render("nive_cms_design_bs3:templates/root.pt", {"context":self.page.dataroot, "view":view, "cmsview":None})
 
