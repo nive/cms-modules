@@ -1,4 +1,6 @@
 .settings
 .idea
+.project
+.pydevproject
 
 *.egg.info
