@@ -264,8 +264,7 @@ class Design(DesignBase):
         
 
     def HtmlTitle(self):
-        t = self.request.environ.get(u"htmltitle") or self.context.GetTitle()
-        return u"%s - %s" % (self.context.app.configuration.title, t)
+        return u"%s - %s" % (self.context.app.configuration.title, self.context.GetTitle())
 
 
     # bw 0.9.9
