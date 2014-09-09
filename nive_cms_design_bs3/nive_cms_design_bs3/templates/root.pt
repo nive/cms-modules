@@ -7,11 +7,11 @@
                tal:repeat="el elements">
       <span tal:condition="el.IsContainer()" tal:replace="structure view.RenderView(el, secure=True, raiseUnauthorized=False)"/>
       <div  tal:condition="not el.IsContainer()" tal:content="structure view.RenderView(el, secure=True, raiseUnauthorized=False)"
-            class="col-md-12"></div>
+            class="col-lg-12"></div>
     </tal:block>
     <tal:block tal:condition="not elements">
       <div  tal:condition="not context.app.db.GetCountEntries()" tal:content="structure view.doc()"
-            class="col-md-8 col-md-offset-2"></div>
+            class="col-lg-8 col-lg-offset-2"></div>
     </tal:block>
     </div>
   </tal:block>

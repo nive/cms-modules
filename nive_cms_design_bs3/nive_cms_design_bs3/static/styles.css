@@ -26,7 +26,7 @@ form input.password        { display:block; }
 	background-repeat: no-repeat;
 	background-position: left top;
 }
-.peImage div.title { color: #666666; font-size: 90%; }
+.peImage div.title { color: #666666; }
 .peImage div.left  { margin-right: 20px; margin-bottom: 10px; float:left; }
 .peImage p { padding-bottom: 0px; margin-bottom: 0px; }
 .peImage .teaser  { margin-bottom: 20px; }
@@ -37,7 +37,6 @@ form input.password        { display:block; }
 .peNews .header img { display: block; margin-right: 10px; float: left; margin-bottom: 10px; }
 .peNews .teaser img { display: block; width: 220px; margin-right: 20px; float: left; margin-bottom: 10px; }
 .peNews .teaser_s img { display: block; width: 100px; margin-right: 10px; float: left; margin-bottom: 10px; }
-.peNews h3 { font-family: Verdana, Arial, sans; font-size: 100%; }
 .peNews .teaser .itext { margin-left: 240px; }
 .peNews .teaser_s .itext { margin-left: 110px; }
 .peNews .newsline { margin-bottom:5px; }

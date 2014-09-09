@@ -16,7 +16,7 @@
     <tal:block tal:repeat="el context.GetPageElements(user=view.User(), checkPermissions=True)">
       <span tal:condition="el.IsContainer()" tal:replace="structure view.RenderView(el, secure=True, raiseUnauthorized=False)"/>
       <div  tal:condition="not el.IsContainer()" tal:content="structure view.RenderView(el, secure=True, raiseUnauthorized=False)"
-            class="col-md-12"></div>
+            class="col-lg-12"></div>
     </tal:block>
     </div>
   </tal:block>   
