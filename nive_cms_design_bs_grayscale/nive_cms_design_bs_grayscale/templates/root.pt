@@ -6,7 +6,7 @@
         <div class="intro-body">
             <div class="container">
                 <div class="row">
-                    <tal:block tal:repeat="el context.GetPageElements(request=request, permission='view')">
+                    <tal:block tal:repeat="el context.GetPageElements(securityContext=request, permission='view')">
                         <span tal:condition="el.IsContainer()" tal:replace="structure view.RenderView(el, secure=True, raiseUnauthorized=False)"/>
                         <div  tal:condition="not el.IsContainer()" tal:content="structure view.RenderView(el, secure=True, raiseUnauthorized=False)"
                               class="col-lg-8 col-lg-offset-2 text-center"></div>
@@ -29,7 +29,7 @@
     </header>
 
     <tal:block tal:condition="not view.IsEditmode()"
-             tal:repeat="section context.GetPages(hidden=0)">
+             tal:repeat="section context.GetPages(hidden=0, securityContext=request, permission='view')">
         <section id="${section.meta.pool_filename}" class="content-section">
             <div class="${section.meta.pool_filename}-section container ">
                 <div tal:condition="section.data.get('header')"
@@ -37,7 +37,7 @@
                     <div class="col-lg-12 text-center"><h3 tal:content="structure section.data.get('header')"></h3></div>
                 </div>
                 <div class="row">
-                    <tal:block tal:repeat="el section.GetPageElements(request=request, permission='view')">
+                    <tal:block tal:repeat="el section.GetPageElements(securityContext=request, permission='view')">
                         <span tal:condition="el.IsContainer()" tal:replace="structure view.RenderView(el, secure=True, raiseUnauthorized=False)"/>
                         <div  tal:condition="not el.IsContainer()" tal:content="structure view.RenderView(el, secure=True, raiseUnauthorized=False)"
                               class="col-lg-8 col-lg-offset-2 text-center"></div>

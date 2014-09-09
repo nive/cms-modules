@@ -47,7 +47,7 @@
                     <li class="hidden">
                         <a href="#page-top"></a>
                     </li>
-                    <li tal:repeat="page context.root().GetPages(hidden=0)">
+                    <li tal:repeat="page context.root().GetPages(hidden=0, securityContext=request, permission='view')">
                         <a tal:condition="view.IsEditmode()"
                            class="page-scroll" href="${view.PageUrl(page)}">${page.GetTitle()}</a>
                         <a tal:condition="not view.IsEditmode()"

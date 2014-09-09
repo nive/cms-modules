@@ -51,8 +51,6 @@
   <article>
   <!-- content start -->
   <tal:block metal:define-slot="content">
-    <span tal:repeat="el context.GetPageElements()"
-          tal:replace="structure view.RenderView(el)"/>
   </tal:block>
   <!-- content end -->
   <!-- inserts page edit bar -->

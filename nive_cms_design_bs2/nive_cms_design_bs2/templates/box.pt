@@ -5,7 +5,7 @@
 
 <div tal:attributes="class string:pageelement peBox ${context.data.span} ${context.data.spanoffset} ${view.GetResponsiveClass(context.data.responsive, view.IsEditmode())}; 
                      id string:nive-element${context.GetID()}"
-     tal:define="elements context.GetPageElements()">
+     tal:define="elements context.GetPageElements(request=request, permission='view')">
   <span tal:condition="context.data.highlight" tal:replace="structure view.FmtTag('div', closeTag='no', **{'class':'well'})"/>
   <h1 tal:condition="context.meta.title"
       tal:content="structure context.meta.title"/>
