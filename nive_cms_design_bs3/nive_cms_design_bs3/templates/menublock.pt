@@ -18,7 +18,7 @@
   <h2 tal:condition="context.meta.title"
       tal:content="structure context.meta.title" class="boxHeader"/>
   <ul class="nav nav-pills nav-stacked">
-  <li tal:repeat="page context.GetMenuPages()"><a
+  <li tal:repeat="page context.GetMenuPages(request=request)"><a
      tal:content="structure page.GetTitle()"
      href="${view.PageUrl(page)}"></a></li>
   </ul>

@@ -135,7 +135,7 @@ class Design(DesignBase):
                                                                          root.GetTitle()))
         
         path = page.GetParentIDs()
-        pages = root.GetPages()
+        pages = root.GetPages(request=self.request)
         for page in pages:
             if page.data.get("navHidden"):
                 continue
@@ -205,7 +205,7 @@ class Design(DesignBase):
     def _navigationLevel(self, current, level, active, path, io, ulclass):
         """
         """
-        pages = current.GetPages()
+        pages = current.GetPages(request=self.request)
         # sublevel
         if len(pages) and level > 1:
             io.write(u"""<li><ul id="level%d" class="%s">""" % (level, ulclass))
