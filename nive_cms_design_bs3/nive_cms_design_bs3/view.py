@@ -20,7 +20,7 @@ from pyramid.renderers import render
 from pyramid.httpexceptions import HTTPNotFound
 
 from nive.definitions import ViewModuleConf, ViewConf, ConfigurationError, Conf
-from nive.definitions import IWebsite, IWebsiteRoot, IRoot, ICMSRoot, IPage, IPageElement, IObject, IFile
+from nive.definitions import IWebsite, IWebsiteRoot, IRoot, ICMSRoot, IPage, IPageElement, IObject, IFile, IPortal
 from nive.definitions import IViewModuleConf
 
 from nive_cms.i18n import _
@@ -38,16 +38,17 @@ configuration = ViewModuleConf(
     templates = "nive_cms_design_bs3:templates",
     mainTemplate = "index.pt",
     permission = "view",
+    containment = IWebsite,
     view = "nive_cms_design_bs3.view.Design",
     views = [
-        ViewConf(id="appview",  name="",      attr="app",   context=IWebsite),
+        ViewConf(id="appview",  name="",      attr="app",   context=IWebsite,  containment=IPortal),
         ViewConf(id="search",   name="search",attr="search",context=IRoot),
         ViewConf(id="su",       name="su",    attr="open",  context=IRoot),
         ViewConf(id="rootview", name="",      attr="view",  context=IWebsiteRoot),
         ViewConf(id="objview",  name="",      attr="view",  context=IPage,    containment=IWebsiteRoot),
         ViewConf(id="objview",  name="",      attr="view",  context=IPageElement),
         ViewConf(id="objfile",  name="file",  attr="file",  context=IFile),
-        # restricted permmissions if called in editor
+        # restricted permissions if called in editor
         ViewConf(id="rootview", name="",      attr="view",  context=ICMSRoot, containment=IWebsite),
         ViewConf(id="objview",  name="",      attr="view",  context=IPage,    containment=ICMSRoot),
     ],
