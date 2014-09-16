@@ -17,7 +17,7 @@ configuration = ViewModuleConf("nive_cms_design_bs3",
     name = u"Single page design",
     static = "nive_cms_design_bs_grayscale:static",
     templates = "nive_cms_design_bs_grayscale:templates",
-    mainTemplate = "index.pt",
+    template = "index.pt",
     # assets list the requirements for the website
     assets = [
         ('bootstrap.css', 'nive_cms_design_bs_grayscale:static/css/bootstrap.min.css'),
