@@ -108,7 +108,7 @@ class SubscriptionForm(HTMLForm):
 
 
 class SubscriptionView(DesignBase):
-    
+
     def subscribe(self):
         context = self.context
         form = SubscriptionForm(context=context, request=self.request, view=self, app=context.app)

@@ -48,6 +48,7 @@ class tDesign(object):
     def test_views1(self):
         # root
         view = Design(self.root, self.request)
+        view.__configuration__ = lambda: configuration
         view.HtmlTitle()
         view.index_tmpl()
         view.view()
@@ -66,6 +67,7 @@ class tDesign(object):
     def test_views2(self):
         # page
         view = Design(self.page, self.request)
+        view.__configuration__ = lambda: configuration
         view.HtmlTitle()
         view.index_tmpl()
         view.view()
@@ -82,6 +84,7 @@ class tDesign(object):
         user = User(u"test")
         user.groups.append("group:editor")
         view = Design(self.page, self.request)
+        view.__configuration__ = lambda: configuration
         vrender = {"context":self.page, "view":view, "request": self.request, "cmsview":None}
         
         render("nive_cms_design_bs2:templates/page.pt", vrender)

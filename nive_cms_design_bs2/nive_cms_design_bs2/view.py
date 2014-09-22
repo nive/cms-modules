@@ -64,13 +64,6 @@ class Design(DesignBase):
     
     # routed views -------------------------------------------------------------------------------------
     
-    def view(self):
-        # redirect if page is linked
-        if IPage.providedBy(self) and self.context.IsLinked():
-            return self.Redirect(self.context.data["pagelink"]) 
-        values = {u"cmsview": self.editorview, u"context": self.context, u"view": self} 
-        return self.DefaultTemplateRenderer(values)
-    
     def search(self):
         values = {u"cmsview": self.editorview, u"context": self.context, u"view": self}
         name = u"search.pt"

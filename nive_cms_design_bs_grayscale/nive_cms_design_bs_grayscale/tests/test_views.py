@@ -40,6 +40,7 @@ class tDesign(__local.DefaultTestCase, unittest.TestCase):
         user = User(u"test")
         user.groups.append("group:editor")
         view = Design(self.page, self.request)
+        view.__configuration__ = lambda: configuration
         vrender = {"context":self.page, "view":view, "request": self.request, "cmsview":None}
         
         render("nive_cms_design_bs_grayscale:templates/index.pt", vrender)

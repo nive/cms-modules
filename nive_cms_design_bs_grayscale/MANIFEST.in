@@ -1,0 +1,3 @@
+include *.txt *.ini *.md
+recursive-include nive_cms_design_bs_grayscale *
+global-exclude *.pyc 
