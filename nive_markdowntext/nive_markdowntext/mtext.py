@@ -31,7 +31,7 @@ class mtext(PageElementBase):
         self.ListenEvent("commit", "OnCommit")
 
 
-    def OnCommit(self):
+    def OnCommit(self, **kw):
         if self.useCache:
             self.data["tcache"] = markdown2.markdown(self.data.get("textblock"))
             text = ConvertHTMLToText(self.data["tcache"], removeReST=True)
