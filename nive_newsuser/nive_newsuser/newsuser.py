@@ -130,14 +130,14 @@ class SubscriptionView(DesignBase):
         context = self.context
         # lookup storage application
         storageID = self.context.configuration.storageApplication
-        try:
-            storage = self.context.app.portal[storageID]
-        except KeyError:
-            raise ConfigurationError, "Newsuser storage application not defined"
-        storage = storage.root()
         # try for valid activation id
         aid = self.GetFormValue("aid")
         if aid:
+            try:
+                storage = self.context.app.portal[storageID]
+            except KeyError:
+                raise ConfigurationError, "Newsuser storage application not defined"
+            storage = storage.root()
             newsusers = storage.Select(pool_type=u"newsuser", parameter={u"activationID":aid}, fields=[u"id"], max=2)
             if len(newsusers):
                 user = storage.GetObj(newsusers[0][0])
