@@ -10,10 +10,10 @@ Nive cms page element to send form values by mail.
 
 Uses the `sendMail` module registered with the userdb
 """
-
+import requests
 from nive.views import Mail
 from nive.forms import HTMLForm
-from nive.definitions import IWebsiteRoot
+from nive.components.reform.exception import ValidationFailure
 from nive.definitions import ConfigurationError
 from nive_cms.baseobjects import DesignBase
 from nive_cms.baseobjects import PageElementBase
@@ -54,7 +54,7 @@ class ContactForm(HTMLForm):
             tool = app.GetTool("sendMail")
             result, value = tool(body=body, title=title, recvmails=[self.mail.recv], force=1)
             if not result:
-                msgs.append("Sorry, a error occurred. The email could not be send.")
+                msgs.append("Sorry, an error occurred. The email could not be send.")
             else:
                 msgs.append("Thanks. We have received your message.")
                 return result, self._Msgs(msgs=msgs)
@@ -63,18 +63,21 @@ class ContactForm(HTMLForm):
 
 
 class ContactView(DesignBase):
-    
+    recaptchaUrl = "https://www.google.com/recaptcha/api/siteverify"
+    recaptchaTmpl = """<div class="g-recaptcha" data-sitekey="%s"></div>"""
+
     def contact(self):
         context = self.context
+        conf = self.context.configuration
         # add topic if choices available
-        fields = context.configuration.contactForm
+        fields = conf.contactForm
         topics = context.data.topics
         if topics:
             li = []
             for t in topics.split("\n"):
                 t = t.replace("\r","")
                 li.append({"id":t, "name":t})
-            fc = FieldConf(id="topic", datatype="radio", size= 200, default="", required=1, name="Topic", listItems = li)
+            fc = FieldConf(id="topic", datatype="list", size= 200, default="", required=1, name="Topic", listItems = li)
             # make a new field list
             fn = [fc]
             for f in fields:
@@ -83,9 +86,21 @@ class ContactView(DesignBase):
         # setup the form
         form = ContactForm(context=context, request=self.request, view=self, app=context.app)
         form.fields = fields
-        form.mail =  Mail(context.data.mailtitle, context.configuration.mailtmpl)
+        form.mail =  Mail(context.data.mailtitle, conf.mailtmpl)
         form.mail.recv = (context.data.receiver, context.data.receiverName)
         form.anchor = u"#contact"+str(context.id)
+
+        # validate callback
+        if conf.recaptchaKey:
+            def validate(data):
+                payload = dict(secret=conf.recaptchaSecret, response=self.GetFormValue("g-recaptcha-response"))
+                response = requests.post(self.recaptchaUrl, payload)
+                if not response.json().get("success"):
+                    raise ValidationFailure(self, data, None)
+            form.ListenEvent("validate", validate)
+
+            form.footer = self.recaptchaTmpl % conf.recaptchaKey
+
         form.Setup()
         result, data, action = form.Process()
         return data
@@ -93,7 +108,6 @@ class ContactView(DesignBase):
 
 class ContactObj(PageElementBase):
     pass
-
 
 # contact definition ------------------------------------------------------------------
 
@@ -109,7 +123,9 @@ configuration = ObjectConf(
     description = __doc__,
     # contact specific configuration
     sendMailProvider = "userdb",
-    # the form to be displayed on the web page 
+    recaptchaKey = None,
+    recaptchaSecret = None,
+    # the form to be displayed on the web page
     contactForm = [
        FieldConf(id="name",    datatype="string", size=   50, default="", required=1, name="Name", description=""),
        FieldConf(id="email",   datatype="email",  size=  200, default="", required=1, name="E-Mail", description=""),

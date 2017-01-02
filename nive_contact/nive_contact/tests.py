@@ -5,7 +5,7 @@ import unittest
 from pyramid.renderers import render
 from pyramid import testing 
 
-from nive.definitions import Conf
+from nive.definitions import Conf, ObjectConf
 from nive.definitions import ConfigurationError
 from nive.helper import FormatConfTestFailure
 from nive.views import BaseView
@@ -15,7 +15,9 @@ from nive_contact import contact
 
 class DummyContact(object):
     useCache = False
-    configuration =  contact.configuration
+    configuration =  ObjectConf(contact.configuration)
+    configuration.recaptchaKey = "123456"
+    configuration.recaptchaSecret = "123456"
     data = Conf(receiverName=u"no one", receiver=u"no@one.com", mailtitle=u"contact mail")
     meta = Conf(title=u"a contact form")
     frontendCodepage = ""
@@ -43,7 +45,7 @@ class DummyContact(object):
         raise KeyError, key
 
     
-class DummyView(object):
+class DummyView(contact.ContactView):
     def contact(self):
         return "placeholder"
     
@@ -77,7 +79,7 @@ class TestTemplate(unittest.TestCase):
 
     def test_tmpl(self):
         text = DummyContact()
-        html = render("nive_contact:contact.pt", {"context": text, "view": DummyView()})
+        html = render("nive_contact:contact.pt", {"context": text, "view": DummyView(text, self.request)})
         self.assert_(html)
         self.assert_(html.find("placeholder")!=-1)
 
@@ -89,7 +91,8 @@ class TestTemplate(unittest.TestCase):
             "company":"company", 
             "message":"message"
         }
-        html = render("nive_contact:contactmail.pt", {"data": data, "view": BaseView(None,None)})
+        text = DummyContact()
+        html = render("nive_contact:contactmail.pt", {"data": data, "view": BaseView(text, self.request)})
         self.assert_(html)
         self.assert_(html.find("message")!=-1)
 
