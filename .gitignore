@@ -3,5 +3,6 @@
 .project
 .pydevproject
 
+*.py[co]
 dist
 *.egg.info
