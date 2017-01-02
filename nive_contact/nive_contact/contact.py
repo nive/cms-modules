@@ -96,7 +96,7 @@ class ContactView(DesignBase):
                 payload = dict(secret=conf.recaptchaSecret, response=self.GetFormValue("g-recaptcha-response"))
                 response = requests.post(self.recaptchaUrl, payload)
                 if not response.json().get("success"):
-                    raise ValidationFailure(self, data, None)
+                    raise ValidationFailure(form, data, None)
             form.ListenEvent("validate", validate)
 
             form.footer = self.recaptchaTmpl % conf.recaptchaKey
